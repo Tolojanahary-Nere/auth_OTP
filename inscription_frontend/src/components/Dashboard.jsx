@@ -1,13 +1,30 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        // Supprimer les tokens de session/local storage
+        localStorage.removeItem('accessToken'); // Nom du token (remplacez par le vôtre)
+        localStorage.removeItem('refreshToken');
+
+        // Rediriger vers la page de connexion
+        navigate('/login');
+    };
+
     return (
         <div className="min-h-screen bg-gray-100">
             {/* Barre de navigation */}
             <header className="bg-blue-600 text-white py-4 shadow-md">
                 <div className="container mx-auto px-4 flex justify-between items-center">
                     <h1 className="text-2xl font-bold">Mon Dashboard</h1>
-                    <button className="bg-red-500 px-4 py-2 rounded hover:bg-red-600">Déconnexion</button>
+                    <button
+                        onClick={handleLogout}
+                        className="bg-red-500 px-4 py-2 rounded hover:bg-red-600"
+                    >
+                        Déconnexion
+                    </button>
                 </div>
             </header>
 
