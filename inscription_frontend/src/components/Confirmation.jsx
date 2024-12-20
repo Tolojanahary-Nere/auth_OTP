@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const Confirmation = () => {
-    const [formData, setFormData] = useState({ telephone: '', code: '' });
+    const [formData, setFormData] = useState({  code: '' });
     const navigate = useNavigate(); // Hook pour la redirection
 
     const handleChange = (e) => {
@@ -26,14 +26,7 @@ const Confirmation = () => {
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md w-96">
                 <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Code de Confirmation</h2>
-                <input 
-                    type="text" 
-                    name="telephone" 
-                    placeholder="Téléphone" 
-                    onChange={handleChange} 
-                    className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    required 
-                />
+                
                 <input 
                     type="text" 
                     name="code" 
