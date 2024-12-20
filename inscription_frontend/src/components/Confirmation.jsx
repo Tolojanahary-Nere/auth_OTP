@@ -16,7 +16,7 @@ const Confirmation = () => {
             const response = await axios.post('http://localhost:8000/api/confirmation/', formData);
             alert(response.data.message);
             // Redirige vers le Dashboard après confirmation
-            navigate('/dashboard');
+            navigate('/login');
         } catch (error) {
             alert(error.response?.data.message || "Une erreur est survenue.");
         }
