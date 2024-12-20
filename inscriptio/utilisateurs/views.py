@@ -22,7 +22,6 @@ from django.contrib.auth.models import User
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_str
- 
 
 
 def generer_code_confirmation():
@@ -75,12 +74,14 @@ class InscriptionAPIView(APIView):
         # Créer l'utilisateur
         try:
             user = CustomUser.objects.create_user(
-                username=username,
-                telephone=telephone,
-                email=email,
-                password=password,
-                code_confirmation=code
-            )
+            username=username,
+            telephone=telephone,
+            email=email,
+            password=(password),  # Assurez-vous que cette étape est incluse
+            code_confirmation=code
+        )
+
+            
         except Exception as e:
             return Response({"message": f"Erreur lors de la création de l'utilisateur : {str(e)}"},
                             status=status.HTTP_400_BAD_REQUEST)
@@ -125,37 +126,34 @@ class ConfirmerCodeAPIView(APIView):
         except CustomUser.DoesNotExist:
             return Response({"message": "Code incorrect ou utilisateur introuvable."}, status=status.HTTP_400_BAD_REQUEST)
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate
+from .models import CustomUser
+
 class LoginAPIView(APIView):
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
 
-        # Vérifier si le nom d'utilisateur et le mot de passe sont fournis
         if not username or not password:
             return Response(
                 {"message": "Nom d'utilisateur et mot de passe sont requis."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        try:
-            # Récupérer l'utilisateur à partir du nom d'utilisateur
-            user = User.objects.get(username=username)
+        # Authenticate user using Django's built-in authenticate function
+        user = authenticate(username=username, password=password)
 
-            # Vérifier si le mot de passe correspond
-            if not user.check_password(password):
-                return Response(
-                    {"message": "Mot de passe incorrect."},
-                    status=status.HTTP_401_UNAUTHORIZED,
-                )
-
-            # Vérifier si l'utilisateur a confirmé son compte
+        if user is not None:
             if user.is_verified:
-                # Génère ou récupère un jeton d'authentification
                 token, _ = Token.objects.get_or_create(user=user)
                 return Response(
                     {
                         "message": "Connexion réussie.",
-                        "token": token.key,  # Jeton d'authentification
+                        "token": token.key,
                         "user": {
                             "id": user.id,
                             "username": user.username
@@ -168,10 +166,9 @@ class LoginAPIView(APIView):
                     {"message": "Votre compte n'est pas vérifié."},
                     status=status.HTTP_403_FORBIDDEN,
                 )
-
-        except User.DoesNotExist:
+        else:
             return Response(
-                {"message": "Nom d'utilisateur incorrect."},
+                {"message": "Nom d'utilisateur ou mot de passe incorrect."},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 

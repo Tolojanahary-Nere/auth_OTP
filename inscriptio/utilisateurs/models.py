@@ -5,7 +5,15 @@ class CustomUser(AbstractUser):
     telephone = models.CharField(max_length=15)
     code_confirmation = models.CharField(max_length=6, blank=True, null=True)
     is_verified = models.BooleanField(default=False)
-    email=models.EmailField(max_length=254)
+    email = models.EmailField(
+        max_length=191,
+        unique=True,
+        db_index=False
+    )
+
+    # Supprimez cette ligne, car AbstractUser gère déjà le champ 'password'
+    # password = models.CharField(max_length=128)  # Supprimée
+
     # Redéfinition des relations inverses pour éviter les conflits
     groups = models.ManyToManyField(
         Group,
@@ -24,4 +32,3 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
-

@@ -97,10 +97,20 @@ WSGI_APPLICATION = 'inscriptio.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'auth_OTP',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'OPTIONS': {
+            'sql_mode': 'STRICT_ALL_TABLES',
+             'charset': 'utf8',
+
+        },
     }
 }
+
+
 
 
 # Password validation
@@ -158,3 +168,9 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:3000')
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+AUTH_USER_MODEL = 'utilisateurs.CustomUser'
