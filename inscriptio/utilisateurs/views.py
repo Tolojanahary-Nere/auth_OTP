@@ -114,11 +114,10 @@ class InscriptionAPIView(APIView):
 
 class ConfirmerCodeAPIView(APIView):
     def post(self, request):
-        telephone = request.data.get('telephone')
         code = request.data.get('code')
 
         try:
-            user = CustomUser.objects.get(telephone=telephone, code_confirmation=code)
+            user = CustomUser.objects.get( code_confirmation=code)
             user.is_verified = True
             user.code_confirmation = None
             user.save()
